@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block title %}Pasūtījums #{{ order.id }}{% endblock %}
+{% block content %}
+	<h1>{{ order.title }}</h1>
+	<p>
+		<strong>Tips:</strong> {{ order.type }}
+		| <strong>Statuss:</strong> {{ order.status }}
+		| <strong>Termiņš:</strong> {{ order.deadline.strftime('%Y-%m-%d %H:%M') if order.deadline else '' }}
+	</p>
+	{% if order.cadastre_id %}
+	<p>
+		<strong>Kadastra ID:</strong> {{ order.cadastre_id }}
+		{% if order.location_address %}| <strong>Adrese:</strong> {{ order.location_address }}{% endif %}
+		{% if order.location_lat %}| <strong>Koordinātas:</strong> {{ '%.5f'|format(order.location_lat) }}, {{ '%.5f'|format(order.location_lng) }}{% endif %}
+	</p>
+	{% endif %}
+
+	<h2>Atjaunināt statusu</h2>
+	<form method="post" action="/pasutijumi/{{ order.id }}/statuss" class="inline">
+		<select name="status_value">
+			{% for s in ['pending','in_progress','shipped','completed','cancelled'] %}
+				<option value="{{ s }}" {% if s == order.status %}selected{% endif %}>{{ s }}</option>
+			{% endfor %}
+		</select>
+		<button type="submit">Saglabāt</button>
+	</form>
+
+	{% if user.role == 'admin' %}
+	<h2>Piešķirt</h2>
+	<form method="post" action="/pasutijumi/{{ order.id }}/pieskirt" class="inline">
+		<select name="assignee_id">
+			<option value="">-- Nav --</option>
+			{% for u in users %}
+				<option value="{{ u.id }}" {% if order.assignee_id == u.id %}selected{% endif %}>{{ u.name }}</option>
+			{% endfor %}
+		</select>
+		<button type="submit">Saglabāt</button>
+	</form>
+
+	<h2>Termiņš</h2>
+	<form method="post" action="/pasutijumi/{{ order.id }}/termins" class="inline">
+		<input type="datetime-local" name="deadline" value="{{ order.deadline.strftime('%Y-%m-%dT%H:%M') if order.deadline else '' }}" />
+		<button type="submit">Saglabāt</button>
+	</form>
+
+	<h2>Kadastra imports</h2>
+	<form method="post" action="/pasutijumi/{{ order.id }}/kadastrs" class="inline">
+		<input type="text" name="cadastre_id" placeholder="Kadastra ID" required />
+		<button type="submit">Importēt</button>
+	</form>
+	{% endif %}
+
+	<h2>Piezīmes</h2>
+	<form method="post" action="/pasutijumi/{{ order.id }}/piezimes" class="card">
+		<textarea name="content" rows="3" placeholder="Jūsu piezīme..."></textarea>
+		<button type="submit">Pievienot piezīmi</button>
+	</form>
+	<ul class="notes">
+		{% for n in notes %}
+		<li>
+			<div class="meta">{{ n.created_at.strftime('%Y-%m-%d %H:%M') }}</div>
+			<div class="content">{{ n.content }}</div>
+		</li>
+		{% else %}
+		<li>Nav piezīmju</li>
+		{% endfor %}
+	</ul>
+{% endblock %}
