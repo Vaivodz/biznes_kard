@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% block title %}Jauns pasūtījums{% endblock %}
+{% block content %}
+	<h1>Jauns pasūtījums</h1>
+	<form method="post" action="/pasutijumi/jauns" class="card">
+		<label>Nosaukums
+			<input type="text" name="title" required />
+		</label>
+		<label>Apraksts
+			<textarea name="description" rows="3"></textarea>
+		</label>
+		<label>Tips
+			<select name="type" required>
+				<option value="topography">Topogrāfija</option>
+				<option value="as_built_survey">Pēcizpildes uzmērīšana</option>
+				<option value="engineering_geodesy">Inženierģeodēzija</option>
+			</select>
+		</label>
+		<label>Termiņš
+			<input type="datetime-local" name="deadline" required />
+		</label>
+		<label>Piešķirt lietotājam
+			<select name="assignee_id">
+				<option value="">-- Nav --</option>
+				{% for u in users %}
+					<option value="{{ u.id }}">{{ u.name }} ({{ u.email }})</option>
+				{% endfor %}
+			</select>
+		</label>
+		<button type="submit">Saglabāt</button>
+		<a href="/panelis" class="btn">Atcelt</a>
+	</form>
+{% endblock %}

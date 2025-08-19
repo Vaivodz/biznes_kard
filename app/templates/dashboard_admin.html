@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+{% block title %}Administrācijas panelis{% endblock %}
+{% block content %}
+	<h1>Administrācijas panelis</h1>
+	<p><a class="btn" href="/pasutijumi/jauns">+ Jauns pasūtījums</a></p>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Nosaukums</th>
+				<th>Tips</th>
+				<th>Termiņš</th>
+				<th>Statuss</th>
+				<th>Piesaistīts</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for o in orders %}
+			<tr>
+				<td><a href="/pasutijumi/{{ o.id }}">{{ o.title }}</a></td>
+				<td>{{ o.type }}</td>
+				<td>{{ o.deadline.strftime('%Y-%m-%d %H:%M') if o.deadline else '' }}</td>
+				<td>{{ o.status }}</td>
+				<td>{{ o.assignee_id }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}

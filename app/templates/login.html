@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block title %}Pieslēgšanās{% endblock %}
+{% block content %}
+	<h1>Pieslēgšanās</h1>
+	{% if error %}
+		<div class="alert">{{ error }}</div>
+	{% endif %}
+	<form method="post" action="/pieslegties" class="card">
+		<label>E-pasts<input type="email" name="email" required /></label>
+		<label>Parole<input type="password" name="password" required /></label>
+		<button type="submit">Pieslēgties</button>
+	</form>
+{% endblock %}

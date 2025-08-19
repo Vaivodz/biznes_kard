@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+{% block title %}Mans panelis{% endblock %}
+{% block content %}
+	<h1>Mani pasūtījumi</h1>
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Nosaukums</th>
+				<th>Tips</th>
+				<th>Termiņš</th>
+				<th>Statuss</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for o in orders %}
+			<tr>
+				<td><a href="/pasutijumi/{{ o.id }}">{{ o.title }}</a></td>
+				<td>{{ o.type }}</td>
+				<td>{{ o.deadline.strftime('%Y-%m-%d %H:%M') if o.deadline else '' }}</td>
+				<td>{{ o.status }}</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+{% endblock %}
